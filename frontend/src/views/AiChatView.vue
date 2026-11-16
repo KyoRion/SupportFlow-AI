@@ -21,7 +21,7 @@ async function submit() {
 
   const text = prompt.value
 
-  await chat.send(auth.user.id, text)
+  await chat.sendStreaming(auth.user.id, text)
 
   if (!chat.error) {
     prompt.value = ''
@@ -122,6 +122,75 @@ function startNewChat() {
         </button>
       </form>
     </section>
+
+<section
+  v-if="chat.timeline.length || chat.lastMetrics"
+  class="panel inspector-panel"
+>
+    <h2>Agent Execution Timeline</h2>
+
+    <div
+      v-for="tool in chat.timeline"
+      :key="tool.call_id"
+      class="execution-item"
+    >
+      <div>
+        <strong>{{ tool.name }}</strong>
+
+        <span class="execution-status">
+          {{ tool.status }}
+        </span>
+      </div>
+
+      <small v-if="tool.duration_ms !== null">
+        {{ tool.duration_ms }} ms
+      </small>
+    </div>
+
+    <div v-if="chat.lastMetrics" class="metrics-grid">
+      <div>
+        <small>Agent latency</small>
+        <strong>
+          {{ chat.lastMetrics.duration_ms }} ms
+        </strong>
+      </div>
+
+      <div>
+        <small>Time to first token</small>
+        <strong>
+          {{ chat.lastMetrics.ttft_ms ?? 'N/A' }} ms
+        </strong>
+      </div>
+
+      <div>
+        <small>Input tokens</small>
+        <strong>
+          {{ chat.lastMetrics.usage.input_tokens }}
+        </strong>
+      </div>
+
+      <div>
+        <small>Output tokens</small>
+        <strong>
+          {{ chat.lastMetrics.usage.output_tokens }}
+        </strong>
+      </div>
+
+      <div>
+        <small>Tool calls</small>
+        <strong>
+          {{ chat.lastMetrics.tool_calls }}
+        </strong>
+      </div>
+
+      <div>
+        <small>Model</small>
+        <strong>
+          {{ chat.lastMetrics.model ?? 'Unknown' }}
+        </strong>
+      </div>
+    </div>
+  </section>
   </main>
 </template>
 
@@ -188,6 +257,51 @@ function startNewChat() {
 
 .chat-input button {
   align-self: end;
+}
+
+.inspector-panel {
+  margin-top: 20px;
+}
+
+.execution-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.execution-status {
+  margin-left: 12px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.metrics-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.metrics-grid small {
+  color: #64748b;
+}
+
+@media (max-width: 640px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
