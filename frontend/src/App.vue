@@ -1,57 +1,44 @@
-
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { getErrorMessage } from '@/lib/api'
+import { ref } from 'vue'
 
-interface HealthResponse {
-  status: string
-  service: string
-  database: string
-}
-
-const loading = ref(true)
+const auth = useAuthStore()
+const router = useRouter()
 const error = ref<string | null>(null)
-const health = ref<HealthResponse | null>(null)
 
-onMounted(async () => {
+async function logout() {
   try {
-    const response = await fetch('/api/health')
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`)
-    }
-
-    health.value = await response.json()
+    error.value = null
+    await auth.logout()
+    await router.replace({ name: 'login' })
   } catch (e) {
-    error.value =
-      e instanceof Error ? e.message : 'Unknown error'
-  } finally {
-    loading.value = false
+    error.value = getErrorMessage(e)
   }
-})
+}
 </script>
 
 <template>
-  <main class="container">
-    <h1>SupportFlow AI</h1>
-    <p>Laravel AI & MCP Learning Project</p>
+  <div class="app-shell">
+    <header v-if="auth.user" class="app-header">
+      <RouterLink to="/tickets" class="brand">
+        SupportFlow AI
+      </RouterLink>
 
-    <p v-if="loading">Connecting to backend...</p>
+      <nav>
+        <RouterLink to="/tickets">Tickets</RouterLink>
+        <RouterLink to="/tickets/create">New Ticket</RouterLink>
+      </nav>
 
-    <p v-else-if="error">
-      Connection failed: {{ error }}
-    </p>
+      <div class="user-area">
+        <span>{{ auth.user.name }}</span>
+        <button type="button" @click="logout">Logout</button>
+      </div>
+    </header>
 
-    <div v-else-if="health">
-      <h3>Backend Connected</h3>
-      <pre>{{ health }}</pre>
-    </div>
-  </main>
+    <p v-if="error" class="error">{{ error }}</p>
+
+    <RouterView />
+  </div>
 </template>
-
-<style scoped>
-.container {
-  max-width: 900px;
-  margin: 100px auto;
-  font-family: system-ui, sans-serif;
-}
-</style>
