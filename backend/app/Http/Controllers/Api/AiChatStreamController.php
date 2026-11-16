@@ -31,12 +31,6 @@ class AiChatStreamController extends Controller
         $conversationId = $data['conversation_id'] ?? null;
         $recorder = app(AiRunRecorder::class);
 
-        $recorder->start(
-            $runId,
-            (int) $user->id,
-            $conversationId
-        );
-
         // Same conversation ownership check as Checkpoint D.
         if ($conversationId !== null) {
             $store = app(ConversationStore::class);
@@ -61,6 +55,12 @@ class AiChatStreamController extends Controller
         }
 
         $runId = (string) Str::uuid();
+
+        $recorder->start(
+            $runId,
+            (int) $user->id,
+            $conversationId
+        );
 
         return response()->stream(function () use (
             $agent,
