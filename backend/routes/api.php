@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\TicketMessageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', function () {
@@ -10,4 +11,14 @@ Route::get('/health', function () {
         'service' => 'supportflow-api',
         'database' => 'connected',
     ]);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('tickets', TicketController::class)
+        ->only(['index', 'show', 'store', 'update']);
+
+    Route::post(
+        'tickets/{ticket}/messages',
+        [TicketMessageController::class, 'store']
+    );
 });
