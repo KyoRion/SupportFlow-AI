@@ -39,6 +39,12 @@ const router = createRouter({
         import('@/views/tickets/TicketDetailView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/ai-chat',
+      name: 'ai-chat',
+      component: () => import('@/views/AiChatView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 

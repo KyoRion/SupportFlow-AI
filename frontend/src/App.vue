@@ -29,6 +29,9 @@ async function logout() {
       <nav>
         <RouterLink to="/tickets">Tickets</RouterLink>
         <RouterLink to="/tickets/create">New Ticket</RouterLink>
+        <RouterLink to="/ai-chat">
+          AI Assistant
+        </RouterLink>
       </nav>
 
       <div class="user-area">

@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\AiChatController;
+use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TicketMessageController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Api\LookupController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/health', function () {
     DB::select('SELECT 1');
@@ -39,5 +40,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get(
         '/lookups/orders',
         [LookupController::class, 'orders']
+    );
+
+    Route::post('/ai/chat', [AiChatController::class, 'store'])
+        ->middleware('throttle:10,1');
+
+    Route::get(
+        '/ai/conversations/{conversationId}',
+        [AiChatController::class, 'show']
     );
 });
