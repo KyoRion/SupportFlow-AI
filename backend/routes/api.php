@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\AiChatStreamController;
 use App\Http\Controllers\Api\LookupController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TicketMessageController;
+use App\Http\Controllers\Api\KnowledgeDocumentController;
+use App\Http\Controllers\Api\KnowledgeSearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -75,4 +77,19 @@ Route::middleware('auth:sanctum')->group(function () {
             'tools' => $tools,
         ]);
     })->whereUuid('runId');
+
+    Route::get(
+        '/knowledge/documents',
+        [KnowledgeDocumentController::class, 'index']
+    );
+
+    Route::post(
+        '/knowledge/documents',
+        [KnowledgeDocumentController::class, 'store']
+    )->middleware('throttle:10,1');
+
+    Route::get(
+        '/knowledge/search',
+        KnowledgeSearchController::class
+    )->middleware('throttle:20,1');
 });

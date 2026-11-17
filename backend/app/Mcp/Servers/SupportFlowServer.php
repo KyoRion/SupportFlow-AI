@@ -6,6 +6,7 @@ use App\Mcp\Prompts\TicketTriagePrompt;
 use App\Mcp\Resources\DemoSupportPolicyResource;
 use App\Mcp\Tools\GetTicketDetailsTool;
 use App\Mcp\Tools\SearchTicketsTool;
+use App\Mcp\Tools\SearchKnowledgeBaseTool;
 use Laravel\Mcp\Server;
 use Laravel\Mcp\Server\Attributes\Instructions;
 use Laravel\Mcp\Server\Attributes\Name;
@@ -24,6 +25,7 @@ class SupportFlowServer extends Server
     protected array $tools = [
         GetTicketDetailsTool::class,
         SearchTicketsTool::class,
+        SearchKnowledgeBaseTool::class,
     ];
 
     protected array $resources = [

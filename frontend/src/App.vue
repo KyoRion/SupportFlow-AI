@@ -32,6 +32,9 @@ async function logout() {
         <RouterLink to="/ai-chat">
           AI Assistant
         </RouterLink>
+        <RouterLink to="/knowledge">
+          Knowledge Base
+        </RouterLink>
       </nav>
 
       <div class="user-area">

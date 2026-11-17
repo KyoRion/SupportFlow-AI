@@ -45,6 +45,12 @@ const router = createRouter({
       component: () => import('@/views/AiChatView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/knowledge',
+      name: 'knowledge',
+      component: () => import('@/views/KnowledgeView.vue'),
+      meta: { requiresAuth: true },
+    }
   ],
 })
 
