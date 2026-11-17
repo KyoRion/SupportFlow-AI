@@ -15,3 +15,30 @@
 - Authentication: Laravel Sanctum
 - Testing: PHPUnit, Vitest
 - Infrastructure: Docker Compose
+
+## Model Context Protocol Integration
+
+SupportFlow AI includes a Laravel MCP Server that
+exposes authenticated, read-only support capabilities
+to external AI clients.
+
+### MCP Capabilities
+
+Tools:
+- get-ticket-details
+- search-tickets
+
+Resources:
+- supportflow://policies/demo-support
+
+Prompts:
+- ticket-triage
+
+### Security
+
+- Laravel Sanctum bearer token authentication
+- Scoped MCP access tokens
+- Ticket-level authorization
+- Server-side input validation
+- Read-only tools
+- Response data minimization
