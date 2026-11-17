@@ -31,6 +31,7 @@ class TicketController extends Controller
         ]);
 
         $tickets = Ticket::query()
+            ->visibleTo($request->user())
             ->with(['customer:id,name,email', 'assignee:id,name'])
             ->when(
                 $filters['status'] ?? null,

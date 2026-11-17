@@ -2,10 +2,9 @@
 
 namespace App\Ai\Tools;
 
-use App\Models\Ticket;
 use App\Models\User;
+use App\Services\Tickets\TicketReader;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
@@ -48,23 +47,10 @@ class GetTicketDetails implements Tool
             'ticket_id' => $data['ticket_id'],
         ]);
 
-        $ticket = Ticket::query()
-            ->with([
-                'customer:id,name',
-                'order:id,order_number,status',
-                'assignee:id,name',
-            ])
-            ->find($data['ticket_id']);
-
-        if (
-            ! $ticket ||
-            Gate::forUser($this->actor)
-                ->denies('view', $ticket)
-        ) {
-            return json_encode([
-                'error' => 'Ticket not available.',
-            ], JSON_THROW_ON_ERROR);
-        }
+        $ticket = app(TicketReader::class)->detailsFor(
+            $this->actor,
+            (int) $data['ticket_id']
+        );
 
         return json_encode([
             'id' => $ticket->id,

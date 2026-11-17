@@ -20,7 +20,8 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return true;
+        return $ticket->created_by === $user->id
+            || $ticket->assigned_to === $user->id;
     }
 
     /**
